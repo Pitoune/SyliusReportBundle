@@ -1,29 +1,35 @@
 {% macro list(labels, fields, values) %}
 
-{% import 'SyliusResourceBundle:Macros:buttons.html.twig' as buttons %}
+    {% import 'SyliusResourceBundle:Macros:buttons.html.twig' as buttons %}
 
-{% if values|length > 0 %}
-    <table id="results" class="ui sortable stackable celled table">
-        <thead>
+    {% if values|length > 0 %}
+        <table id="results" class="ui sortable stackable celled table"
+               {% if values|first is iterable %}style="display: block; overflow-x: auto;"{% endif %}>
+            <thead>
             <tr>
                 <th></th>
                 {% for label in labels %}
                     <th>{{ label }}</th>
                 {% endfor %}
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             {% for key,value in values %}
                 <tr id="{{ loop.index }}">
                     <td>{{ loop.index }}</td>
-                    <td>{{ key }}</td>
-                    <td>{{ value }}</td>
+                    {% if value is iterable %}
+                        {% for item in value %}
+                            <td>{{ item }}</td>
+                        {% endfor %}
+                    {% else %}
+                        <td>{{ key }}</td>
+                        <td>{{ value }}</td>
+                    {% endif %}
                 </tr>
             {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <span>{{ 'sylius.ui.there_are_no_reports_created'|trans }}</span>
-{% endif %}
-
+            </tbody>
+        </table>
+    {% else %}
+        <span>{{ 'sylius.ui.there_are_no_reports_created'|trans }}</span>
+    {% endif %}
 {% endmacro %}
